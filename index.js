@@ -44,11 +44,22 @@ async function run() {
       const result = await cursor.toArray(); // this will give the data to server and it need to be array-ed before the operation
       res.send(result);
     })
+    app.get("/user/:id",async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id : new ObjectId(id)} 
+      const result = await userCollection.findOne(query); // this will give the data to server and it need to be array-ed before the operation
+      res.send(result);
+    })
     app.post("/user", async(req,res)=>{
         const user = req.body;
         console.log(user,"  this is user");
         const result = await userCollection.insertOne(user);
         res.send(result)
+    })
+    app.put("/user/:id", async (req,res) =>{
+      const id = req.params.id;
+      const updatedUser = req.body;
+      console.log(id,updatedUser,"ok bai"); 
     })
     app.delete("/user/:id", async(req,res)=>{
       const id = req.params.id;
@@ -126,5 +137,14 @@ CLIENT
 
 
 
-source : search "Node mongoDb crud (as for now ver: v5.3(current))"
+
+
+---------------------------
+some process need to be clear 
+get is get the data from database and show to server 
+post is directly posting it to database where we taught that we post the data to server 
+delete works fine but the update of array in UI need to be refresh to show it 
+so we use react's state to keep the data as accurate as server without refreshing the website
+
+source : search "Node mongoDb crud (as for now version: v5.3(current))"
 */

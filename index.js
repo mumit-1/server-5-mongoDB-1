@@ -9,21 +9,22 @@ app.use(cors());
 app.use(express.json());
 
 /////////// from chatgpt
-require('dotenv').config({ path: '.env.local' });
+// require('dotenv').config({ path: '.env.local' });
 
-const mongoose = require('mongoose');
- const uri = process.env.MONGODB_URI;//here %40 is @
-mongoose.connect(uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => {
-  console.log('✅ MongoDB connected successfully!');
-})
-.catch((err) => {
-  console.error('❌ MongoDB connection error:', err);
-});
- 
+// const mongoose = require('mongoose');
+//  const uri = process.env.MONGODB_URI;//here %40 is @
+// mongoose.connect(uri, {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// })
+// .then(() => {
+//   console.log('✅ MongoDB connected successfully!');
+// })
+// .catch((err) => {
+//   console.error('❌ MongoDB connection error:', err);
+// });
+ const uri = "mongodb://localhost:27017";
+
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
@@ -60,6 +61,15 @@ async function run() {
       const id = req.params.id;
       const updatedUser = req.body;
       console.log(id,updatedUser,"ok bai"); 
+      const filter = {_id: new ObjectId(id)}
+      const options = {upsert: true}
+      const updatedData = {
+        $set:{
+          name: updatedUser.name,
+          email: updatedUser.email
+        }
+      }
+      const result = await userCollection.updateOne(filter,options,update);
     })
     app.delete("/user/:id", async(req,res)=>{
       const id = req.params.id;
